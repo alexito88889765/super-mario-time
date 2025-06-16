@@ -318,35 +318,6 @@ function Level_11 () {
 function Level_5 () {
 	
 }
-controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Start == 0) {
-        startt()
-        Start = 1
-        music2 = 1
-    }
-    if (fire_mario == 1) {
-        music.setVolume(148)
-        music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
-        projectile = sprites.createProjectileFromSprite(img`
-            . 2 . 4 . . . . . . . . . . . . 
-            . . 2 . 4 . . . . . . . . . . . 
-            . . 2 . 4 4 . . . . . . . . . . 
-            . . . . . . . 2 . 2 2 . . . . . 
-            . . . . . . . 4 . 2 2 . . . . . 
-            . . . . . . . . 4 . 2 2 2 2 . . 
-            . . . . 4 . . . . . 2 2 4 2 2 . 
-            . . . . 4 4 . . . . 2 2 4 4 2 . 
-            . . . . . . . . 2 2 2 4 4 4 2 . 
-            . . . . . . . . 2 2 2 4 4 4 2 . 
-            . . . . . . . 2 2 4 4 4 4 4 2 . 
-            . . . . . . . 2 4 4 4 4 4 2 2 . 
-            . . . . . . . 2 4 4 4 4 4 2 2 . 
-            . . . . . . . 2 2 4 4 4 4 2 . . 
-            . . . . . . . 2 2 4 4 4 4 4 . . 
-            . . . . . . . . 2 4 4 4 4 . . . 
-            `, mySprite, 80, 0)
-    }
-})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Fire_Flower, function (sprite, otherSprite) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Fire_Flower)
     if (fire_mario == 0) {
@@ -434,6 +405,103 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Rosalina_Q_Wapaa, function (spri
         Super_Star_Power()
     }
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
+    if (game_over == 3) {
+        game_over += 1
+        controller.moveSprite(mySprite, 0, 0)
+        animation.stopAnimation(animation.AnimationTypes.All, mySprite)
+        mySprite.setImage(assets.image`myImages.image2`)
+        mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
+        mySprite.setFlag(SpriteFlag.GhostThroughWalls, true)
+        mySprite.vy = -100
+        music.setVolume(255)
+        music.play(music.createSong(hex`0078000408020108001c000e050046006603320000040a002d0000006400140001320002010002480000000200011e02000400011e04000600011e10001400012514001800012c18001c00012c1c002000012c20002400012924002800012728002e0001252e0032000120340040000125`), music.PlaybackMode.UntilDone)
+        pause(2000)
+        info.setLife(0)
+        pause(2000)
+        game.splash("mamma miiia")
+        music2 = 0
+    } else {
+        game_over += 1
+        music.setVolume(255)
+        music.play(music.createSong(hex`0078000408020108001c000e050046006603320000040a002d0000006400140001320002010002120000000200011e02000400011e04000600011e`), music.PlaybackMode.InBackground)
+        controller.moveSprite(mySprite, 0, 0)
+        animation.stopAnimation(animation.AnimationTypes.All, mySprite)
+        mySprite.setImage(assets.image`myImages.image2`)
+        mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
+        mySprite.setFlag(SpriteFlag.GhostThroughWalls, true)
+        mySprite.vy = -100
+        info.changeLifeBy(-1)
+        pause(10)
+        controller.moveSprite(mySprite, 60, 0)
+        pause(2500)
+        MarioDead = 0
+        mySprite.sy = 0.75
+        Big_Mario = 0
+        fire_mario = 0
+        tiles.placeOnRandomTile(mySprite, assets.tile`myTile11`)
+        mySprite.setFlag(SpriteFlag.GhostThroughSprites, false)
+        mySprite.setFlag(SpriteFlag.GhostThroughWalls, false)
+        mySprite.setImage(assets.image`Mario`)
+    }
+})
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+	
+})
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+	
+})
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
+	
+})
+function NoFire_Mario () {
+    fire_mario = 0
+    mySprite.vy = -150
+    characterAnimations.loopFrames(
+    mySprite,
+    [img`
+        . . . . . 2 2 2 2 2 . . . . . . 
+        . . . . 2 2 2 2 2 2 2 2 2 . . . 
+        . . . . 7 7 7 5 5 7 5 . . . . . 
+        . . . 7 5 7 5 5 5 7 5 5 5 . . . 
+        . . . 7 5 7 7 5 5 5 7 5 5 5 . . 
+        . . . 7 7 5 5 5 5 7 7 7 7 . . . 
+        . . . . . 5 5 5 5 5 5 5 . . . . 
+        . . . . 7 2 2 2 2 2 . . . . . . 
+        . . . 7 7 2 2 2 2 2 7 7 7 . . . 
+        . . 7 7 7 2 2 2 2 2 7 7 7 7 . . 
+        . . 5 5 7 2 5 2 2 5 2 7 5 5 . . 
+        . . 5 5 5 2 2 2 2 2 2 5 5 5 . . 
+        . . 5 5 2 2 2 2 2 2 2 2 5 5 . . 
+        . . . . 2 2 2 . . 2 2 2 . . . . 
+        . . . 7 7 7 . . . . 7 7 7 . . . 
+        . . 7 7 7 7 . . . . 7 7 7 7 . . 
+        `,img`
+        . . . . . 1 1 1 1 1 . . . . . . 
+        . . . . 1 1 1 1 1 1 1 1 1 . . . 
+        . . . . 2 2 2 5 5 2 5 . . . . . 
+        . . . 2 5 2 5 5 5 2 5 5 5 . . . 
+        . . . 2 5 2 2 5 5 5 2 5 5 5 . . 
+        . . . 2 2 5 5 5 5 2 2 2 2 . . . 
+        . . . . . 5 5 5 5 5 5 5 . . . . 
+        . . . . 2 1 2 2 2 2 . . . . . . 
+        . . . 2 2 1 2 2 2 1 2 2 2 . . . 
+        . . 2 2 2 1 1 1 1 1 2 2 2 2 . . 
+        . . 5 5 2 1 5 1 1 5 1 2 5 5 . . 
+        . . 5 5 5 1 1 1 1 1 1 5 5 5 . . 
+        . . 5 5 1 1 1 1 1 1 1 1 5 5 . . 
+        . . . . 1 1 1 . . 1 1 1 . . . . 
+        . . . 2 2 2 . . . . 2 2 2 . . . 
+        . . 2 2 2 2 . . . . 2 2 2 2 . . 
+        `],
+    150,
+    characterAnimations.rule(Predicate.Moving)
+    )
+    music.setVolume(106)
+    music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
+    mySprite.ay = 250
+    controller.moveSprite(mySprite, 60, 0)
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (suelo == 1) {
         suelo = 0
@@ -518,100 +586,35 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         }
     }
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
-    if (game_over == 3) {
-        game_over += 1
-        controller.moveSprite(mySprite, 0, 0)
-        animation.stopAnimation(animation.AnimationTypes.All, mySprite)
-        mySprite.setImage(assets.image`myImages.image2`)
-        mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
-        mySprite.setFlag(SpriteFlag.GhostThroughWalls, true)
-        mySprite.vy = -100
-        music.setVolume(255)
-        music.play(music.createSong(hex`0078000408020108001c000e050046006603320000040a002d0000006400140001320002010002480000000200011e02000400011e04000600011e10001400012514001800012c18001c00012c1c002000012c20002400012924002800012728002e0001252e0032000120340040000125`), music.PlaybackMode.UntilDone)
-        pause(2000)
-        info.setLife(0)
-        pause(2000)
-        game.splash("mamma miiia")
-        music2 = 0
-    } else {
-        game_over += 1
-        music.setVolume(255)
-        music.play(music.createSong(hex`0078000408020108001c000e050046006603320000040a002d0000006400140001320002010002120000000200011e02000400011e04000600011e`), music.PlaybackMode.InBackground)
-        controller.moveSprite(mySprite, 0, 0)
-        animation.stopAnimation(animation.AnimationTypes.All, mySprite)
-        mySprite.setImage(assets.image`myImages.image2`)
-        mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
-        mySprite.setFlag(SpriteFlag.GhostThroughWalls, true)
-        mySprite.vy = -100
-        info.changeLifeBy(-1)
-        pause(10)
-        controller.moveSprite(mySprite, 60, 0)
-        pause(2500)
-        MarioDead = 0
-        mySprite.sy = 0.75
-        Big_Mario = 0
-        fire_mario = 0
-        tiles.placeOnRandomTile(mySprite, assets.tile`myTile11`)
-        mySprite.setFlag(SpriteFlag.GhostThroughSprites, false)
-        mySprite.setFlag(SpriteFlag.GhostThroughWalls, false)
-        mySprite.setImage(assets.image`Mario`)
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (Start == 0) {
+        startt()
+        Start = 1
+        music2 = 1
+    }
+    if (fire_mario == 1) {
+        music.setVolume(148)
+        music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+        projectile = sprites.createProjectileFromSprite(img`
+            . 2 . 4 . . . . . . . . . . . . 
+            . . 2 . 4 . . . . . . . . . . . 
+            . . 2 . 4 4 . . . . . . . . . . 
+            . . . . . . . 2 . 2 2 . . . . . 
+            . . . . . . . 4 . 2 2 . . . . . 
+            . . . . . . . . 4 . 2 2 2 2 . . 
+            . . . . 4 . . . . . 2 2 4 2 2 . 
+            . . . . 4 4 . . . . 2 2 4 4 2 . 
+            . . . . . . . . 2 2 2 4 4 4 2 . 
+            . . . . . . . . 2 2 2 4 4 4 2 . 
+            . . . . . . . 2 2 4 4 4 4 4 2 . 
+            . . . . . . . 2 4 4 4 4 4 2 2 . 
+            . . . . . . . 2 4 4 4 4 4 2 2 . 
+            . . . . . . . 2 2 4 4 4 4 2 . . 
+            . . . . . . . 2 2 4 4 4 4 4 . . 
+            . . . . . . . . 2 4 4 4 4 . . . 
+            `, mySprite, 80, 0)
     }
 })
-controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-	
-})
-sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
-	
-})
-function NoFire_Mario () {
-    fire_mario = 0
-    mySprite.vy = -150
-    characterAnimations.loopFrames(
-    mySprite,
-    [img`
-        . . . . . 2 2 2 2 2 . . . . . . 
-        . . . . 2 2 2 2 2 2 2 2 2 . . . 
-        . . . . 7 7 7 5 5 7 5 . . . . . 
-        . . . 7 5 7 5 5 5 7 5 5 5 . . . 
-        . . . 7 5 7 7 5 5 5 7 5 5 5 . . 
-        . . . 7 7 5 5 5 5 7 7 7 7 . . . 
-        . . . . . 5 5 5 5 5 5 5 . . . . 
-        . . . . 7 2 2 2 2 2 . . . . . . 
-        . . . 7 7 2 2 2 2 2 7 7 7 . . . 
-        . . 7 7 7 2 2 2 2 2 7 7 7 7 . . 
-        . . 5 5 7 2 5 2 2 5 2 7 5 5 . . 
-        . . 5 5 5 2 2 2 2 2 2 5 5 5 . . 
-        . . 5 5 2 2 2 2 2 2 2 2 5 5 . . 
-        . . . . 2 2 2 . . 2 2 2 . . . . 
-        . . . 7 7 7 . . . . 7 7 7 . . . 
-        . . 7 7 7 7 . . . . 7 7 7 7 . . 
-        `,img`
-        . . . . . 1 1 1 1 1 . . . . . . 
-        . . . . 1 1 1 1 1 1 1 1 1 . . . 
-        . . . . 2 2 2 5 5 2 5 . . . . . 
-        . . . 2 5 2 5 5 5 2 5 5 5 . . . 
-        . . . 2 5 2 2 5 5 5 2 5 5 5 . . 
-        . . . 2 2 5 5 5 5 2 2 2 2 . . . 
-        . . . . . 5 5 5 5 5 5 5 . . . . 
-        . . . . 2 1 2 2 2 2 . . . . . . 
-        . . . 2 2 1 2 2 2 1 2 2 2 . . . 
-        . . 2 2 2 1 1 1 1 1 2 2 2 2 . . 
-        . . 5 5 2 1 5 1 1 5 1 2 5 5 . . 
-        . . 5 5 5 1 1 1 1 1 1 5 5 5 . . 
-        . . 5 5 1 1 1 1 1 1 1 1 5 5 . . 
-        . . . . 1 1 1 . . 1 1 1 . . . . 
-        . . . 2 2 2 . . . . 2 2 2 . . . 
-        . . 2 2 2 2 . . . . 2 2 2 2 . . 
-        `],
-    150,
-    characterAnimations.rule(Predicate.Moving)
-    )
-    music.setVolume(106)
-    music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-    mySprite.ay = 250
-    controller.moveSprite(mySprite, 60, 0)
-}
 function Level_2 () {
 	
 }
@@ -1167,18 +1170,15 @@ function Level_1 () {
     }
     music.stopAllSounds()
 }
-controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-	
-})
-controller.A.onEvent(ControllerButtonEvent.Released, function () {
-    movement = 1
-})
 function Level_4 () {
 	
 }
 function Cuando_come_a_Rosalina () {
 	
 }
+controller.A.onEvent(ControllerButtonEvent.Released, function () {
+    movement = 1
+})
 function NoBig_Mario () {
     Big_Mario = 0
 }
@@ -4262,9 +4262,9 @@ let movement = 0
 let bandera: Sprite = null
 let interrog_box = 0
 let Goomba: Sprite = null
+let projectile: Sprite = null
 let MarioDead = 0
 let fire: Sprite = null
-let projectile: Sprite = null
 let mySprite4: Sprite = null
 let suelo = 0
 let mySprite: Sprite = null
